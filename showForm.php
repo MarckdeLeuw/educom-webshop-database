@@ -14,7 +14,7 @@ function openForm($page,$action,$method="POST")
 
 function closeForm($submit_caption="Verstuur")
 {
-	echo '		<input  type="submit" value="Verstuur"></input>'.PHP_EOL
+	echo '		<input  type="submit" value="'.$submit_caption.'"></input>'.PHP_EOL
 		.'	</form></main>'.PHP_EOL;
 }
 

@@ -94,6 +94,15 @@ function processRequest($page){
             // var_dump($result);           
             break;
 
+        case "detail":
+            require_once('detail.php')        ;
+            if ($_SERVER['REQUEST_METHOD']=='POST')
+            {
+                addToCart();
+                $page = 'detail';
+            }
+        break;
+
         default:
         // echo "No process request";
 
@@ -144,8 +153,8 @@ echo  '</html>';
 
 
 function showMenu(){
-    $menuItems = array('home', 'about','contact', 'register', 'login');
-    $menuItemsLogin = array('home', 'about','contact');
+    $menuItems = array('home', 'about','contact', 'webshop', 'detail','register', 'login');
+    $menuItemsLogin = array('home', 'about','contact','webshop', 'detail', 'cart');
     
     echo 
     '<nav class="menu">
@@ -197,6 +206,29 @@ function showContent($result){
             require('showForm.php');
             showResult($result['fields'],$result['post']);
             break;
+            
+        case 'webshop':
+            var_dump($_SESSION);
+            require ('webshop.php');
+            showWebshopHeader();
+            showProducts();
+            break;
+        case 'detail':
+            var_dump($_SESSION);
+            require_once ('detail.php');
+            $id=$_GET['id'];
+            // var_dump($id);
+            showProduct($id);
+            // showProduct($id);
+            break;
+        case 'cart':
+            // var_dump($_SESSION);
+            require_once ('cart.php');
+            // $id=$_GET['id'];
+            // var_dump($id);
+            showCart();
+            // showProduct($id);
+            break;   
       
         case 'login':
         case 'register':
