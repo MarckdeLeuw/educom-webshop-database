@@ -28,12 +28,12 @@ function authenticateUser($value, $otherValues){
 		return $userLogin;
     }else{
 
-	var_dump($otherValues[0]);
-    if($otherValues[0]===$user['wachtwoord']){
+	// var_dump($otherValues[0]);
+    if($otherValues[0]===$user['password']){
         $userLogin= array(
             'valid'     =>  true,
             'email'     =>  $user['email'],
-            'extra'      =>  $user['naam'],
+            'extra'      =>  $user['name'],
         ); 
 		// var_dump($userLogin);
         return $userLogin;        
@@ -92,6 +92,32 @@ function samePassword($value, $otherValues){
 }
 
 function addUser($newUser){
+    $servername = "localhost";
+    $username = "gebruiker";
+    $password = "OIT.fxhgeTO6(reM";
+    $dbname = "marck_webshop";
+// Create connection
+$conn = mysqli_connect($servername, $username, $password,$dbname);
+
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+echo "Connected successfully";
+
+$sql = "INSERT INTO users(naam, email, wachtwoord)
+VALUES ('".$newUser['name']."','".$newUser['email']."','".$newUser['password']."')";
+
+if (mysqli_query($conn, $sql)) {
+    // $last_id = mysqli_insert_id($conn);
+    // echo "New record created successfully. Last inserted ID is: " . $last_id;
+} else {
+    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+}
+mysqli_close($conn); 
+};
+
+function addUserOld($newUser){
     $file = 'dataUser/users.txt';
     $stringUser = PHP_EOL . $newUser['email']. '|' . $newUser['name'] . '|' . $newUser['password'] ;
     $newFile = fopen($file,"a");
@@ -102,7 +128,39 @@ function addUser($newUser){
 //==================================
 //LOGIN EN REGISTER VALIDATION
 //==================================
-function findUserByEmail($content){
+function findUserByEmail($email){
+    $servername = "localhost";
+    $username = "gebruiker";
+    $password = "OIT.fxhgeTO6(reM";
+    $dbname = "marck_webshop";
+// Create connection
+$conn = mysqli_connect($servername, $username, $password, $dbname);
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+$sql = "SELECT id, naam, email, wachtwoord FROM users WHERE email ='".$email."'";
+$result = mysqli_query($conn, $sql);
+
+if (mysqli_num_rows($result) > 0) {
+  // output data of each row
+    while($row = mysqli_fetch_assoc($result)) {
+    $user=array(
+        'email'=>$row["email"],
+        'name'=>$row["naam"],
+        'password'=>$row["wachtwoord"]
+    );
+    }
+} else {
+    $user = NULL;
+}
+
+mysqli_close($conn);
+return $user;
+}
+//textFile version:
+
+function findUserByEmailOld($content){
     $file = 'dataUser/users.txt';
     $myFile = fopen($file, "r") or die("Unable to open file!");
     $firstLine=fgets($myFile);
