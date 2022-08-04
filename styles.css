@@ -1,0 +1,99 @@
+*{
+    /*reset altijd mee beginnen*/
+    margin: 0;
+    padding: 0;
+}
+/* 
+3.1
+*/
+@media(min-width: 768px) {
+    .products{
+        /*zet ze naast elkaar*/
+        display: flex;
+        justify-content: space-between;
+    }
+
+
+/*Bovenstaand zorgt ervoor dat bij kleiner scherm zoals telefoon allesn onder elkaar komt*/
+
+}
+.product ul{
+    list-style: none;
+}
+.product{
+    display: flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+    /* border: 1px red solid; */
+    margin: 20px;
+    padding: 20 px;
+    flex-basis: 45%;
+}
+
+/* ===========================================
+============================================= */
+/* opdracht 1*/
+body {
+	width: 800px;
+	margin: auto;
+	background-color: grey;
+}
+/* opdracht 2*/
+header{
+	font-size: 48px;
+	text-align: center;
+}
+/* opdracht 3 en 4 */
+a:link {
+  text-decoration: none;
+}
+li.solid{
+	border-style: solid;
+}
+
+.menu ul{
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+
+	gap: 150px;
+	list-style: none;
+}
+
+/* opdracht 5*/
+nav{
+	width: 800px;
+	background: blue;
+	color: white;
+	font-size: 12px;
+}
+a:visited{
+	color: white;
+}
+/* opdracht 6*/
+main{
+	background: white;
+	color: dark grey;
+	font-size: 12px;
+}
+/* opdracht 7*/
+footer{
+	background: black;
+	color: white;
+	font-size: 10px;
+	text-align: right;
+}
+/* opdracht 8*/
+
+label{
+	display: inline-block;
+}
+input{
+	width: 400px;
+}
+textarea{
+	width: 400px;
+}
+
+
