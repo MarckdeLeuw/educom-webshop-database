@@ -33,15 +33,19 @@ function getUrlVar($key, $default='')
 
 
 function processRequest($page){
-
+// GW : wanneer je functie een array $result gaat retourneren,
+// begin dan met deze variabele te declareren, zodat je ZEKER bent dat er ALTIJD een geld result bestaat!
     switch($page){
 
         case "login":
             require ('login.php');
             $fields = getLoginFields();
+// GW : deze test zie ik op veel plekken terugkomen, dat kan beter!	
             if ($_SERVER['REQUEST_METHOD']=='POST')
             {
                 require('validation.php');
+//GW : de variabele $result gebruik je voor het resultaat van je functie	
+//door hem hier voor een andere functionaliteit te gebruiken creeer je verwarring en mogelijke bugs!	
                 $result = checkFields($fields);
                 if($result['ok']===true){        
                     doLoginUser($result['extra']);               
@@ -88,9 +92,10 @@ function processRequest($page){
                     
                 }
             }
+// GW door $result voor 2 verschillende dingen te gebruiken krijg je hier wel een
+// erg vreemde situatie, door aan result een nieuwe keu post toe te voegen waarin je het hele rsult opnieuw opslaat!!	
             $result['fields'] = $fields; 
-            $result['post']=$result;
-                      
+            $result['post']=$result;                      
             // var_dump($result);           
             break;
 
@@ -98,8 +103,22 @@ function processRequest($page){
             require_once('detail.php')        ;
             if ($_SERVER['REQUEST_METHOD']=='POST')
             {
-                addToCart();
-                $page = 'detail';
+// GW controleer HIER of het meegegeven id wel valid is	alvorens addToCart aan te roepen!	
+                $id=$_GET['id'];
+                addToCart($id);
+                $page = 'cart';
+            }
+        break;
+
+        case "cart":
+            require_once('cart.php')        ;
+            if ($_SERVER['REQUEST_METHOD']=='POST')
+            {
+                writeToOrders();                
+                writeToOrderDetails(); 
+                updateProductInventory();               
+                $_SESSION['cart_products'] = NULL;
+                $page = 'cart';
             }
         break;
 
@@ -153,8 +172,8 @@ echo  '</html>';
 
 
 function showMenu(){
-    $menuItems = array('home', 'about','contact', 'webshop', 'detail','register', 'login');
-    $menuItemsLogin = array('home', 'about','contact','webshop', 'detail', 'cart');
+    $menuItems = array('home', 'about','contact', 'webshop', /*'detail',*/'register', 'login');
+    $menuItemsLogin = array('home', 'about','contact','webshop',/* 'detail',*/ 'cart');
     
     echo 
     '<nav class="menu">
@@ -208,16 +227,17 @@ function showContent($result){
             break;
             
         case 'webshop':
-            var_dump($_SESSION);
+            // var_dump($_SESSION);
             require ('webshop.php');
             showWebshopHeader();
             showProducts();
             break;
         case 'detail':
-            var_dump($_SESSION);
+            // var_dump($_SESSION);
+            // var_dump($_POST);
             require_once ('detail.php');
             $id=$_GET['id'];
-            // var_dump($id);
+            var_dump($id);
             showProduct($id);
             // showProduct($id);
             break;

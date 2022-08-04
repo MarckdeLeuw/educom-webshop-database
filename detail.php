@@ -1,11 +1,17 @@
 <?php
 
+// Maark nieuwe functie getProduuct ipv tetProducts
+
+
 function showProduct($id){
 // var_dump($id);
 require_once('webshop.php');
+// GW : Alle producten ophalen uit database terwijl je er maar 1 nodig hebt?
 $products=getProducts();
 // var_dump($items);
-$id=$_GET['id'];
+// GW : Waarom? Je geeft $id al mee als parameter!
+// $id=$_GET['id'];
+
 // var_dump($id);
 $product=$products[$id];
 // var_dump($product);
@@ -32,33 +38,47 @@ echo'
 </div>';
 }
 
-// function addToCart(){
-//     require_once('webshop.php');
-//     $products=getProducts();
-//     // var_dump( $_POST);
-//     $id=$_POST['id'];
-//     // var_dump($id);    
-//     $product=$products[$id];
-//     // var_dump($product);
-//     $_SESSION['cart_product'][$id]=$product;    
-// }
-
-function addToCart(){
+function addToCartOld(){//hier zat de fout mbt de id en lege array
+// function addToCart($id){
     require_once('webshop.php');
     $products=getProducts();
-    // var_dump( $_POST);
+    var_dump( $_GET);
+// GW : geef het gewenste id mee als parameter aan deze functie!
+// Zorg dat je aan de aanroepende kant controleert of het id in de post wel geldig is!	
     $id=$_POST['id'];
-        // var_dump($id);    
+    // var_dump($id); 
+// GW : Enkel het id en het aantal is nodig in je sessie, alle andere info 
+// kun je ophalen wanneer iemand de cart wil bekijken!		   
     $productToAdd=$products[$id];//product uit de array van database
     // $numberOfProducts=$_SESSION['cart_product'][$id]['number'];//nu gedefinieerde array voor cart
-    if(isset($_SESSION['cart_product'][$id]['number'])){
-        $numberOfProducts=$_SESSION['cart_product'][$id]['number'];
+    if(isset($_SESSION['cart_products'][$id]['number'])){
+        $numberOfProducts=$_SESSION['cart_products'][$id]['number'];
         $numberOfProducts=$numberOfProducts+1;
-        $_SESSION['cart_product'][$id]['number']=$numberOfProducts;
+        $_SESSION['cart_products'][$id]['number']=$numberOfProducts;
     }else{
         $productToAdd['number']=1;
-        $_SESSION['cart_product'][$id]=$productToAdd;
+        $_SESSION['cart_products'][$id]=$productToAdd;
     }
 }
+
+
+
+function addToCart($id){//$id wordt bij processrequest meegegeven
+    var_dump($id);
+    require_once('webshop.php');
+    $products=getProducts();
+    $productToAdd=$products[$id];//product uit de array van database
+    // $numberOfProducts=$_SESSION['cart_product'][$id]['number'];//nu gedefinieerde array voor cart
+    if(isset($_SESSION['cart_products'][$id]['number'])){
+        $numberOfProducts=$_SESSION['cart_products'][$id]['number'];
+        $numberOfProducts=$numberOfProducts+1;
+        $_SESSION['cart_products'][$id]['number']=$numberOfProducts;
+    }else{
+        $productToAdd['number']=1;
+        $_SESSION['cart_products'][$id]=$productToAdd;
+    }
+
+    }
+
 
 ?>

@@ -10,7 +10,7 @@ function validEmail($value)
 {
 	return filter_var($value, FILTER_VALIDATE_EMAIL);	
 }
-
+// GW: Geef een zelfverklarende naam aan je parameters! $value is bijvoorbeeld ....
 // =============================================================
 // LOGIN VALIDATION
 //===============================================================
@@ -33,7 +33,11 @@ function authenticateUser($value, $otherValues){
         $userLogin= array(
             'valid'     =>  true,
             'email'     =>  $user['email'],
-            'extra'      =>  $user['name'],
+            'extra'      =>  array(
+				$user['id'],
+				$user['name']
+			)
+			// 'extra'      =>  $user['name'],
         ); 
 		// var_dump($userLogin);
         return $userLogin;        
@@ -49,8 +53,12 @@ function authenticateUser($value, $otherValues){
 }
 
 
-function doLoginUser($userName){
-	$_SESSION['userName']=$userName;
+function doLoginUser($extra){
+	$_SESSION['userId']=$extra[0];
+	$_SESSION['userName']=$extra[1];
+
+	// $_SESSION['userName']=$userName;
+	// $_SESSION['userId']=$userId;
 }
 
 //==================================
@@ -64,6 +72,7 @@ function samePassword($value, $otherValues){
 
 	if($user===NULL){
 		if($otherValues[1]===$otherValues[2]){
+// GW: ook hier betere namen, bv $email, $password, $repeat_password
 			$newUser = array(
 				'valid'=>true,
 				'extra'=>array(		
@@ -145,10 +154,11 @@ $result = mysqli_query($conn, $sql);
 if (mysqli_num_rows($result) > 0) {
   // output data of each row
     while($row = mysqli_fetch_assoc($result)) {
-    $user=array(
+    $user=array(		
         'email'=>$row["email"],
         'name'=>$row["naam"],
-        'password'=>$row["wachtwoord"]
+        'password'=>$row["wachtwoord"],
+		'id'=>$row["id"]
     );
     }
 } else {
@@ -164,6 +174,7 @@ function findUserByEmailOld($content){
     $file = 'dataUser/users.txt';
     $myFile = fopen($file, "r") or die("Unable to open file!");
     $firstLine=fgets($myFile);
+// GW: waarom de eerst eregel buiten de while_loop lezen?
     $trimFirstLine=trim($firstLine, "[]\n");
     $keyUser = explode("]|[", $trimFirstLine);
     
