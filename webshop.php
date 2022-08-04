@@ -13,35 +13,35 @@ function getProducts(){
     $dbname = "marck_webshop";
 
     // Create connection
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-// Check connection
-if (!$conn) {
-  die("Connection failed: " . mysqli_connect_error());
-}
+    $conn = mysqli_connect($servername, $username, $password, $dbname);
+    // Check connection
+    if (!$conn) {
+      die("Connection failed: " . mysqli_connect_error());
+    }
 
-$sql = "SELECT id, name, price, stock, picture, details FROM products";
-$result = mysqli_query($conn, $sql);
-$products = array();
+    $sql = "SELECT id, name, price, stock, picture, details FROM products";
+    $result = mysqli_query($conn, $sql);
+    $products = array();
 
-if (mysqli_num_rows($result) > 0) {
-  // output data of each row
-  while($row = mysqli_fetch_assoc($result)) {
-    $products[$row['id']]=array(
-    'id'=>$row['id'],
-    'name'=>$row['name'],
-    'price'=>$row['price'],
-    'stock'=>$row['stock'],
-    'picture'=>$row['picture'],
-    'details'=>$row['details'],
-    );
-    // var_dump($products);
-    // echo '</br>';
-  }
-} else {
-  echo "0 results";
-}
-return $products;
-mysqli_close($conn);    
+    if (mysqli_num_rows($result) > 0) {
+      // output data of each row
+      while($row = mysqli_fetch_assoc($result)) {
+        $products[$row['id']]=array(
+        'id'=>$row['id'],
+        'name'=>$row['name'],
+        'price'=>$row['price'],
+        'stock'=>$row['stock'],
+        'picture'=>$row['picture'],
+        'details'=>$row['details'],
+        );
+        // var_dump($products);
+        // echo '</br>';
+      }
+    } else {
+      echo "0 results";
+    }
+    return $products;
+    mysqli_close($conn);    
 }
 
 function showProducts(){

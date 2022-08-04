@@ -100,11 +100,12 @@ function processRequest($page){
             break;
 
         case "detail":
-            require_once('detail.php')        ;
+            require_once('detail.php');
             if ($_SERVER['REQUEST_METHOD']=='POST')
             {
 // GW controleer HIER of het meegegeven id wel valid is	alvorens addToCart aan te roepen!	
-                $id=$_GET['id'];
+                var_dump($_GET);
+                $id=$_POST['id'];
                 addToCart($id);
                 $page = 'cart';
             }
@@ -114,6 +115,7 @@ function processRequest($page){
             require_once('cart.php')        ;
             if ($_SERVER['REQUEST_METHOD']=='POST')
             {
+                $_SESSION['orderNumber'] = createOrderNr();
                 writeToOrders();                
                 writeToOrderDetails(); 
                 updateProductInventory();               
@@ -237,7 +239,7 @@ function showContent($result){
             // var_dump($_POST);
             require_once ('detail.php');
             $id=$_GET['id'];
-            var_dump($id);
+            // var_dump($id);
             showProduct($id);
             // showProduct($id);
             break;

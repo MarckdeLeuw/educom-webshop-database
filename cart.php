@@ -1,6 +1,6 @@
 <?php
-
-function totalPrice(){
+/*=================================================
+function totalPriceOld(){
   $productsInCart= $_SESSION['cart_products'];
   if ($productsInCart !==NULL){
     $totalPrice=0;
@@ -9,6 +9,20 @@ function totalPrice(){
       } 
       return $totalPrice;   
   }
+  }
+===================================================*/
+function totalPrice(){
+  if (($_SESSION['cart_products']) !== NULL){
+    $totalPrice = 0;
+    $productsInCart= $_SESSION['cart_products'];
+    foreach ($productsInCart as $productInCart){
+      require_once('detail.php');
+      $product=getProduct($productInCart['id']);  
+      $subTotal=$product['price']*$productInCart['number'];  
+      $totalPrice += $subTotal;
+      }     
+      return $totalPrice;
+    }
 }
 
 function createOrderNr(){
@@ -36,8 +50,8 @@ function createOrderNr(){
   mysqli_close($conn);
   return $id;
 }
-
-function showCart(){  
+/*========================================
+function showCartOld(){  
   if (isset($_SESSION['cart_products'])){
   $productsInCart= $_SESSION['cart_products'];
   $_SESSION['orderNumber'] = createOrderNr();
@@ -77,6 +91,54 @@ function showCart(){
   echo'Uw winkelwagen is leeg.';
   }
 }
+==========================================*/
+
+
+function showCart(){  
+  if (isset($_SESSION['cart_products'])){
+  $productsInCart= $_SESSION['cart_products'];
+  // var_dump($productsInCart);
+
+  // $_SESSION['orderNumber'] = createOrderNr();
+  
+  // var_dump($productsInCart);  
+  var_dump($_SESSION);  
+  echo ' <table>
+    <tr>
+    <th>id</th>  
+    <th>Afbeelding</th> 
+    <th>Naam</th> 
+    <th>Prijs</th>
+    <th>Aantal</th>    
+    <th>Subtotaal</th> 
+    </tr>';
+  
+    foreach ($productsInCart as $productInCart){
+    require_once('detail.php');
+    $product=getProduct($productInCart['id']);    
+    echo'
+    <tr>
+    <td>'.$productInCart['id'].'</td> 
+    <td><img src="/opdracht_3.1_opzet/images/'.$product['picture'].'.jpg" style="width:50px;height:50px;"></td>
+    <td>'.$product['name'] .'</td>
+    <td>'.$product['price'].'</td>
+    <td>'.$productInCart['number'].'</td> 
+    <td>'.$product['price']*$productInCart['number'].'</td>    
+    </tr>';
+    // var_dump($product);
+    }
+    
+    echo'</table> ';
+    echo 'Totaalprijs is €'.totalPrice();
+    require_once('showForm.php');
+    openForm('cart','');
+    // echo '<input type = "hidden" name="id"value ="'.$product['id'].'">';
+    closeForm("Afrekenen");    
+
+    }else{
+    echo'Uw winkelwagen is leeg.';
+  }
+}
 
 function writeToOrders(){
   $servername = "localhost";
@@ -86,7 +148,6 @@ function writeToOrders(){
 
   $orderNumber=$_SESSION['orderNumber'];
   $userId=$_SESSION['userId'];
-  // $userId='100';//dit is een testwaarde
   // var_dump($orderNumber);
   // var_dump($userId);
   // Create connection
@@ -138,8 +199,8 @@ function writeToOrderDetails(){
   mysqli_close($conn); 
 
 }
-
-function updateProductInventory(){
+/*
+function updateProductInventoryOld(){
 
   $servername = "localhost";
   $username = "gebruiker";
@@ -168,4 +229,40 @@ function updateProductInventory(){
   }
   }
 }
+*/
+
+function updateProductInventory(){
+
+    $servername = "localhost";
+    $username = "gebruiker";
+    $password = "OIT.fxhgeTO6(reM";
+    $dbname = "marck_webshop";
+  
+    $productsInCart= $_SESSION['cart_products'];
+  
+    $conn = mysqli_connect($servername, $username, $password,$dbname);
+    // Check connection
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
+        }
+    echo "Connected successfully";
+      
+    foreach ($productsInCart as $productInCart)
+    {
+      // $id=$productInCart['id'];
+      // $product['number'];
+      require_once('detail.php');
+      $product=getProduct($productInCart['id']);  
+      $id=$product['id'];
+      $productStock=$product['stock']-$productInCart['number'];
+    
+      $sql = "UPDATE products SET stock=$productStock WHERE id=$id";
+      if (mysqli_query($conn, $sql)) {
+    }else{
+    echo "Error updating record: " . mysqli_error($conn);
+    }
+    }
+    }  
+
+
 ?>
